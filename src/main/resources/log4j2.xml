@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--<Configuration status="WARN">
+    <Properties>
+        <Property name="log-path">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} : [%L] - %msg%n" />
+        </Console>
+        &lt;!&ndash;<File name="FILE" fileName="../logs/hello.log" immediateFlush="false" append="false">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>&ndash;&gt;
+        <RollingFile name="ROLLINGFILE" fileName="${log-path}/myexample.log" filePattern="${log-path}/myexample-%d{yyyy-MM-dd}-%i.log" >
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %t %-5level %logger{36} : [%L] - %msg%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="CONSOLE" />
+            <AppenderRef ref="ROLLINGFILE"/>
+        </Root>
+    </Loggers>
+</Configuration>-->
+
+<Configuration status="warn" name="MyApp" packages="">
+    <Properties>
+        <Property name="log-path">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} : [%L] - %msg%n" />
+        </Console>
+        <RollingFile name="ROLLINGFILE" fileName="${log-path}/myexample.log" filePattern="${log-path}/myexample-%d{yyyy-MM-dd}-%i.log" >
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %t %-5level %logger{36} : [%L] - %msg%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="ROLLINGFILE"/>
+        </Root>
+    </Loggers>
+</Configuration>
