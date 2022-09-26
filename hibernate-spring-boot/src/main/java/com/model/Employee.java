@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Setter
@@ -40,6 +41,9 @@ public class Employee {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private List<Address> address;
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "employees")
+    private Collection<Project> projects;
 
     public Employee(){}
 

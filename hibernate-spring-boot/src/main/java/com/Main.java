@@ -24,18 +24,24 @@ public class Main<T> {
         String result = session.createNativeQuery("select version()").getSingleResult().toString();
         System.out.println("Result : " + result);
 
-        //Long id = createEmployee(session);
-        Employee e = getEmployee(session, 799921817485148161l);
-        System.out.println(e);
+        createEmployee(session);
+        //Employee e = getEmployee(session, 799921817485148161l);
+        //System.out.println(e);
         //updateEmployee(session, 799040637301522433l);
         //deleteEmployee(session, 799040637301522433l);
     }
 
-    public static Long createEmployee(Session session) {
+    public static void createEmployee(Session session) {
         Name name = Name.builder()
-                .firstName("John")
-                .middleName("Fred")
+                .firstName("Jess")
+                .middleName("Barry")
                 .lastName("Hill")
+                .build();
+
+        Name name2 = Name.builder()
+                .firstName("Cara")
+                .middleName("Jose")
+                .lastName("Elliot")
                 .build();
 
         Department department = Department.builder()
@@ -47,18 +53,35 @@ public class Main<T> {
                 .name(name)
                 .doj(LocalDate.of(2010, 12, 23))
                 .salary(90000D)
-                .email("johnh@mail.com")
+                .email("jessh@mail.com")
+                .department(department)
+                .build();
+
+        Employee employee2 = Employee.builder()
+                .name(name2)
+                .doj(LocalDate.of(2010, 12, 23))
+                .salary(90000D)
+                .email("carae@mail.com")
                 .department(department)
                 .build();
 
         Address a1 = address("NYC", "21st Street", "NY", "USA", "34524", employee);
-        Address a2 = address("MUM", "Link Road", "MH", "IND", "665241", employee);
+        Address a2 = address("MUM", "Link Road", "MH", "IND", "665241", employee2);
 
-        employee.setAddress(List.of(a1, a2));
+        Project p1 = Project.builder().name("Hibernate").employees(List.of(employee, employee2)).build();
+        Project p2 = Project.builder().name("Cassandra").employees(List.of(employee, employee2)).build();
+
+        employee.setAddress(List.of(a1));
+        employee2.setAddress(List.of(a2));
+
+        employee.setProjects(List.of(p1, p2));
+        employee2.setProjects(List.of(p1, p2));
 
         session.beginTransaction();
+        session.save(employee);
+        session.save(employee2);
         session.getTransaction().commit();
-        return (Long) session.save(employee);
+
     }
 
     public static Address address(String city, String street, String state, String country, String zipCode, Employee employee) {
