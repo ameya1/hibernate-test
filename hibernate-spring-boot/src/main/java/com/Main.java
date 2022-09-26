@@ -1,8 +1,6 @@
 package com;
 
-import com.model.Account;
-import com.model.Customers;
-import com.model.Employee;
+import com.model.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.Session;
@@ -17,32 +15,89 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
-public class Main {
+public class Main<T> {
     public static void main(String[] args) {
         Session session = getSessionFactory().openSession();
         String result = session.createNativeQuery("select version()").getSingleResult().toString();
         System.out.println("Result : " + result);
 
-        //Customers customer = Customers.builder().city("New York").name("Tiara").build();
+        //Long id = createEmployee(session);
+        Employee e = getEmployee(session, 799921817485148161l);
+        System.out.println(e);
+        //updateEmployee(session, 799040637301522433l);
+        //deleteEmployee(session, 799040637301522433l);
+    }
 
-        /*Account account = Account.builder().accountNumber(565644144L).name("Flora").build();
+    public static Long createEmployee(Session session) {
+        Name name = Name.builder()
+                .firstName("John")
+                .middleName("Fred")
+                .lastName("Hill")
+                .build();
 
-        session.beginTransaction();
-        session.save(account);
-        session.getTransaction().commit();*/
+        Department department = Department.builder()
+                .name("HR").build();
+
+        //Department department = (Department) get(Department.class, session, 799358030986772481l);
 
         Employee employee = Employee.builder()
-                .name("Jenny")
+                .name(name)
                 .doj(LocalDate.of(2010, 12, 23))
                 .salary(90000D)
-                .email("mira@mail.com")
+                .email("johnh@mail.com")
+                .department(department)
                 .build();
+
+        Address a1 = address("NYC", "21st Street", "NY", "USA", "34524", employee);
+        Address a2 = address("MUM", "Link Road", "MH", "IND", "665241", employee);
+
+        employee.setAddress(List.of(a1, a2));
+
         session.beginTransaction();
-        Long id = (Long) session.save(employee);
         session.getTransaction().commit();
-        System.out.printf("emp_id is " + id);
+        return (Long) session.save(employee);
+    }
+
+    public static Address address(String city, String street, String state, String country, String zipCode, Employee employee) {
+        return Address.builder()
+                .city(city)
+                .state(state)
+                .country(country)
+                .zipCode(zipCode)
+                .employee(employee)
+                .street(street)
+                .build();
+    }
+
+    public static Employee getEmployee(Session session, Long id) {
+        return session.get(Employee.class, id);
+    }
+
+    public static Object get(Class clazz, Session session, Long id) {
+        return session.get(clazz, id);
+    }
+
+    public static void updateEmployee(Session session, Long id) {
+        Employee e = getEmployee(session, id);
+        if(e != null) {
+            e.setSalary(80_000D);
+            session.beginTransaction();
+            session.update(e);
+            session.getTransaction().commit();
+        }
+    }
+
+    public static void deleteEmployee(Session session, Long id) {
+        Employee e = getEmployee(session, id);
+        if(e != null) {
+            e.setSalary(80_000D);
+            session.beginTransaction();
+            session.delete(e);
+            session.getTransaction().commit();
+        }
     }
 
     public static DataSource dataSource() {
